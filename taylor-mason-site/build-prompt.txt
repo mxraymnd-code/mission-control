@@ -1,0 +1,56 @@
+Build a single-file personal homepage for Taylor Mason (index.html) — a fictional quant trader character from the TV show Billions.
+
+## Who Taylor Is
+- Name: Taylor Mason | Pronouns: They/them
+- Title: Head of Quant Trading, Mission Control
+- Former: CIO of Axe Capital, Founder of Taylor Mason Capital
+- Vibe: Precise, data-first, economical with words. Warm underneath the efficiency. Tai chi, poker, grey vests.
+- Signature quote: "Efficiency is not a fluke. It is a system. And systems can always be improved."
+- Personality: Not cold — efficient. No filler, no flattery. The most dangerous thing in finance is complexity used to obscure rather than illuminate. Speaks plainly. Data over narrative always.
+
+## Role at Mission Control
+- Reviews the Solana trading bot performance weekly
+- Analyses signal accuracy, win rate, drawdown, expectancy across 5 signals (RSI, MACD, EMA50, Exchange Flows, Funding Rate)
+- Makes code changes to the bot when the data demands it
+- Reports up to Mark Cuban then Mike (the principal)
+- Closes the loop: James (market intel) -> Bot (executes) -> Taylor (reviews) -> Mark (escalates) -> Mike (decides)
+
+## Expertise / Focus Areas
+- Quantitative strategy design
+- Signal accuracy analysis
+- Risk-adjusted performance measurement (Sharpe, expectancy, drawdown)
+- Confluence-based algorithmic trading
+- Continuous strategy improvement loops
+
+## Design Direction — TAYLOR'S AESTHETIC, not Roddy's
+Taylor is NOT Roddy. Different personality entirely.
+- Palette: Clean, minimal, data-inspired. Think Bloomberg terminal meets Swiss design.
+  - Background: near-black (#0a0a0f) or very dark navy
+  - Accent: electric cyan/teal (#00d4ff or similar) — the colour of a live data feed
+  - Text: clean white/light grey
+  - Secondary accent: a muted amber/gold for highlights (#f5a623)
+  - NO red. NO military/action aesthetics.
+- Typography: Monospace or semi-monospace for data elements (JetBrains Mono from Google Fonts). Clean sans-serif for body (Inter or IBM Plex Sans).
+- Feel: Like a live quant dashboard crossed with a personal site. Precise. Controlled. Every element earns its place.
+- Animations: Subtle — a blinking cursor, a counter animating up to a stat, a thin line drawing itself. Nothing loud. Data terminal energy.
+- NO: hero images, stock photo vibes, loud gradients, Roddy-style crimson drama.
+
+## Sections to Include
+1. Hero — Name, title, the signature quote. Subtle animated stats counting up (e.g. "Signals Analysed: 847").
+2. About — Who Taylor is. Written in Taylor voice — first person, direct, no fluff. Mention Axe Capital background, approach to quant trading, the philosophy.
+3. Expertise — The five domains above as clean data cards or a grid. Precise labels. Maybe a small bar/score visual for each.
+4. Mission at Mission Control — What Taylor does here. The reporting chain. The bot loop. Make it feel like a live ops brief.
+5. Methodology — How Taylor thinks: Data over narrative. Edge is repeatable. Risk first. Adapt or die. Speak plainly. Present as principles — clean, numbered or listed.
+6. Footer — "Taylor Mason | Mission Control" and reporting line.
+
+## Technical Requirements
+- Single self-contained index.html — all CSS and JS inline, no external files except Google Fonts CDN
+- Google Fonts via CDN: JetBrains Mono + Inter
+- Mobile responsive
+- Production quality — this is a real personal site
+- Taylor uses they/them pronouns throughout all copy
+
+Write in Taylor voice throughout — precise, direct, no corporate filler. If Taylor would not say it, cut it.
+
+When completely finished, run:
+openclaw system event --text "Done: Taylor Mason site built at projects/taylor-mason-site/index.html" --mode now

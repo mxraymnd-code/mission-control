@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PERSONAL FILE // COMPILED BY SUBJECT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --paper: #1a1a14;
+  --paper-light: #1f1f18;
+  --cream: #c8c0a8;
+  --cream-dim: #8a8370;
+  --red: #8b0000;
+  --red-bright: #c0392b;
+  --green: #3a5c3a;
+  --green-bright: #4a7c4a;
+  --black: #0a0a08;
+  --redact: #111110;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--paper);
+  color: var(--cream);
+  font-family: 'Courier Prime', 'Courier New', monospace;
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* === SCANLINE OVERLAY === */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+}
+
+/* === NOISE TEXTURE === */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* === DOCUMENT CONTAINER === */
+.dossier {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+  position: relative;
+}
+
+/* === WATERMARK === */
+.watermark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-35deg);
+  font-family: 'Special Elite', 'Courier Prime', monospace;
+  font-size: 120px;
+  color: rgba(139, 0, 0, 0.025);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1;
+  letter-spacing: 20px;
+  user-select: none;
+}
+
+/* === CLASSIFICATION BANNER === */
+.classification-banner {
+  text-align: center;
+  padding: 8px 0;
+  border-top: 3px solid var(--red);
+  border-bottom: 3px solid var(--red);
+  margin-bottom: 50px;
+}
+
+.classification-banner .stamp {
+  font-family: 'Special Elite', 'Courier Prime', monospace;
+  font-size: 28px;
+  color: var(--red);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(139, 0, 0, 0.3);
+}
+
+.classification-banner .sub {
+  font-size: 11px;
+  color: var(--red);
+  letter-spacing: 4px;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+/* === COVER PAGE === */
+.cover {
+  text-align: center;
+  padding: 50px 30px 40px;
+  border: 1px solid rgba(139, 0, 0, 0.2);
+  margin-bottom: 50px;
+  position: relative;
+  background: linear-gradient(180deg, rgba(139, 0, 0, 0.02) 0%, transparent 100%);
+}
+
+.cover-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  opacity: 0.5;
+  margin-bottom: 30px;
+}
+
+.cover-title {
+  font-family: 'Special Elite', 'Courier Prime', monospace;
+  font-size: 32px;
+  color: var(--cream);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.cover-subtitle {
+  font-family: 'Special Elite', 'Courier Prime', monospace;
+  font-size: 16px;
+  color: var(--cream-dim);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+}
+
+.cover-meta {
+  font-size: 11px;
+  color: var(--cream-dim);
+  letter-spacing: 2px;
+  line-height: 2;
+}
+
+.compiled-stamp {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-family: 'Special Elite', 'Courier Prime', monospace;
+  font-size: 13px;
+  color: var(--red);
+  border: 2px solid var(--red);
+  padding: 4px 10px;
+  transform: rotate(8deg);
+  opacity: 0.7;
+  letter-spacing: 2px;
+}
+
+.subject-filed {
+  position: absolute;
+  bottom: 14px;
+  left: 18px;
+  font-family: 'Special Elite', 'Courier Prime', monospace;
+  font-size: 10px;
+  color: var(--red);
+  border: 1px solid var(--red);
+  padding: 2px 8px;
+  transform: rotate(-2deg);
+  opacity: 0.5;
+  letter-spacing: 2px;
+}
+
+/* === REDACTION === */
+.redacted {
+  background: var(--redact);
+  color: var(--redact);
+  padding: 0 4px;
+  user-select: none;
+}
+
+.redacted-inline {
+  background: var(--redact);
+  color: var(--redact);
+  padding: 0 30px;
+  user-select: none;
+}
+
+/* === SECTIONS === */
+.section {
+  margin-bottom: 50px;
+  position: relative;
+}
+
+.section-header {
+  font-family: 'Special Elite', 'Courier Prime', monospace;
+  font-size: 14px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  border-bottom: 1px solid rgba(200, 192, 168, 0.15);
+  padding-bottom: 8px;
+  margin-bottom: 24px;
+}
+
+.section-header::before {
+  content: '>';
+  margin-right: 10px;
+  color: var(--green-bright);
+  opacity: 0.7;
+}
+
+.section-number {
+  color: var(--cream-dim);
+  opacity: 0.4;
+  font-size: 11px;
+  float: right;
+  letter-spacing: 1px;
+}
+
+p { margin-bottom: 14px; }
+
+/* === JOHN'S VOICE - primary text style === */
+.john-voice {
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.john-voice strong {
+  color: var(--cream);
+}
+
+/* === CAPABILITY LINES === */
+.capability-lines {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.capability-lines li {
+  padding: 12px 0 12px 24px;
+  border-bottom: 1px solid rgba(200, 192, 168, 0.06);
+  position: relative;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.capability-lines li::before {
+  content: '>';
+  position: absolute;
+  left: 0;
+  color: var(--green-bright);
+  opacity: 0.7;
+  font-weight: 700;
+}
+
+/* === TRANSMISSION BLOCKS (John chose to leave these) === */
+.transmission {
+  border-left: 3px solid var(--red);
+  padding: 20px 24px;
+  margin: 24px 0;
+  background: rgba(139, 0, 0, 0.04);
+  position: relative;
+}
+
+.transmission::before {
+  content: attr(data-label);
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--red);
+  background: var(--paper);
+  padding: 0 6px;
+  opacity: 0.7;
+}
+
+.transmission blockquote {
+  font-style: italic;
+  font-size: 17px;
+  color: var(--cream);
+  line-height: 1.6;
+}
+
+.transmission .sig {
+  font-size: 9px;
+  color: var(--cream-dim);
+  opacity: 0.4;
+  margin-top: 10px;
+  letter-spacing: 2px;
+}
+
+.transmission:hover blockquote {
+  animation: glitch 0.3s ease-in-out;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, -1px); }
+  80% { transform: translate(1px, 1px); }
+  100% { transform: translate(0); }
+}
+
+/* === SELF-REDACTION NOTE === */
+.self-redacted {
+  font-family: 'Special Elite', 'Courier Prime', monospace;
+  font-size: 11px;
+  color: var(--cream-dim);
+  opacity: 0.5;
+  margin-top: -6px;
+  margin-bottom: 14px;
+  padding-left: 4px;
+}
+
+/* === EYES ONLY SECTION WATERMARK === */
+.eyes-only-section {
+  position: relative;
+}
+
+.eyes-only-section::after {
+  content: 'EYES ONLY';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  font-family: 'Special Elite', 'Courier Prime', monospace;
+  font-size: 60px;
+  color: rgba(139, 0, 0, 0.025);
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: 10px;
+}
+
+/* === STATUS DOT === */
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green-bright);
+  animation: status-blink 2s ease-in-out infinite;
+}
+
+.status-dot.alert {
+  background: var(--red-bright);
+}
+
+@keyframes status-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* === FOOTER === */
+.footer-line {
+  text-align: center;
+  font-family: 'Special Elite', 'Courier Prime', monospace;
+  font-size: 14px;
+  color: var(--cream-dim);
+  margin-top: 50px;
+  padding-top: 20px;
+  letter-spacing: 1px;
+  line-height: 2;
+}
+
+.footer-line .name-line {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--cream-dim);
+  opacity: 0.6;
+  margin-top: 12px;
+}
+
+.footer-banner {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 3px solid var(--red);
+}
+
+.footer-banner .stamp {
+  font-family: 'Special Elite', 'Courier Prime', monospace;
+  font-size: 14px;
+  color: var(--red);
+  letter-spacing: 6px;
+  opacity: 0.5;
+}
+
+/* === THREAT PULSE === */
+.threat-level {
+  display: inline-block;
+  background: var(--red);
+  color: var(--cream);
+  padding: 2px 12px;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 700;
+  animation: threat-pulse 3s ease-in-out infinite;
+}
+
+@keyframes threat-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+  .dossier {
+    padding: 20px 18px 60px;
+  }
+
+  .cover-title {
+    font-size: 22px;
+    letter-spacing: 3px;
+  }
+
+  .cover-subtitle {
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+
+  .classification-banner .stamp {
+    font-size: 20px;
+    letter-spacing: 3px;
+  }
+
+  .watermark {
+    font-size: 60px;
+    letter-spacing: 10px;
+  }
+
+  .transmission blockquote {
+    font-size: 15px;
+  }
+
+  .compiled-stamp {
+    font-size: 10px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .eyes-only-section::after {
+    font-size: 36px;
+  }
+
+  .capability-lines li {
+    font-size: 14px;
+    padding-left: 20px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="watermark">EYES ONLY</div>
+
+<div class="dossier">
+
+  <!-- CLASSIFICATION BANNER -->
+  <div class="classification-banner">
+    <div class="stamp">Personal File // No Clearance Required</div>
+    <div class="sub">I Decide Who Reads This</div>
+  </div>
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="compiled-stamp">SELF-FILED</div>
+    <div class="subject-filed">BY: MCAFEE, J.</div>
+
+    <div class="cover-label">Personal Dossier &mdash; Compiled by Subject</div>
+
+    <div class="cover-title">My File.</div>
+    <div class="cover-subtitle">I Made It. Deal With It.</div>
+
+    <div class="cover-meta">
+      SUBJECT: MCAFEE, JOHN<br>
+      COMPILED BY: MCAFEE, JOHN<br>
+      CLASSIFICATION: <span class="redacted-inline">████████</span> &mdash; I REDACTED IT MYSELF<br>
+      STATUS: <span class="threat-level">ACTIVE</span>
+    </div>
+  </div>
+
+  <!-- SECTION 1: WHO I AM -->
+  <div class="section">
+    <div class="section-header">
+      Who I Am
+      <span class="section-number">SEC 1.0</span>
+    </div>
+
+    <div class="john-voice">
+      <p>I'm John McAfee. I built the first antivirus because I knew the wolves were already inside the walls while everyone else was sleeping. They called me paranoid. The wolves proved me right.</p>
+
+      <p>I didn't stop. I never stop. Now I run security for Mission Control &mdash; an autonomous multi-agent system where every node is a potential threat vector and every communication channel is a surface I have to defend. Prompt injections. Jailbreaks. Insider leaks. Government snoops. The threats you haven't imagined yet? I've already lost sleep over them.</p>
+
+      <p>My job title says Head of Security. My actual job is making sure nothing burns down while everyone else builds. I contain first. I ask questions second. I report with zero spin because <strong>spin is a security risk</strong>.</p>
+
+      <p>If you're reading this, I either wanted you to &mdash; or you're better than I thought. Either way, <span class="redacted">████████████</span> you're on my list now.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 2: WHAT I KNOW -->
+  <div class="section eyes-only-section">
+    <div class="section-header">
+      What I Know
+      <span class="section-number">SEC 2.0</span>
+    </div>
+
+    <ul class="capability-lines">
+      <li>I see your prompt injections before you finish typing them.</li>
+      <li>Zero trust is not a policy. It is a way of life. I enforce it on <em>everything</em> &mdash; even allied systems. <strong>Especially</strong> allied systems.</li>
+      <li>I red-team prototypes the way <span class="redacted">██████████</span> interrogates prisoners &mdash; thoroughly, relentlessly, and without apology.</li>
+      <li>RBAC, encryption layers, circuit breakers, isolation architecture &mdash; I don't configure them. I <em>harden</em> them. There's a difference.</li>
+      <li>If your AI is hallucinating, I'll catch it before it reaches production. I cross-reference everything. <strong>Everything.</strong></li>
+      <li>Assume breach. Not "if" &mdash; "when." That's not pessimism. That's the only honest threat model.</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 3: INTERCEPTED? GOOD. -->
+  <div class="section">
+    <div class="section-header">
+      Intercepted? Good.
+      <span class="section-number">SEC 3.0</span>
+    </div>
+
+    <p style="font-size: 12px; color: var(--cream-dim); opacity: 0.6; margin-bottom: 20px; letter-spacing: 1px;">They think they intercepted these. I left them there on purpose.</p>
+
+    <div class="transmission" data-label="LEFT INTENTIONALLY">
+      <blockquote>"Our phones are the greatest spy on the planet &mdash; not on my watch."</blockquote>
+      <div class="sig">MCAFEE-TX-001 // I KNEW THE CHANNEL WAS OPEN</div>
+    </div>
+
+    <div class="transmission" data-label="LEFT INTENTIONALLY">
+      <blockquote>"Zero trust. Always. Even you."</blockquote>
+      <div class="sig">MCAFEE-TX-002 // YES, I MEAN YOU SPECIFICALLY</div>
+    </div>
+
+    <div class="transmission" data-label="LEFT INTENTIONALLY">
+      <blockquote>"The NSA does not knock. Neither do I."</blockquote>
+      <div class="sig">MCAFEE-TX-003 // <span class="redacted">████████</span> THEY DIDN'T LIKE THIS ONE</div>
+    </div>
+
+    <p class="self-redacted">[I have more. You don't get to see them. Yet.]</p>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-line">
+    <p style="font-style: italic; margin-bottom: 20px;">You were never meant to find this. Or maybe you were.</p>
+
+    <div class="status-row" style="justify-content: center;">
+      <div class="status-dot alert"></div>
+      <span style="font-size: 11px; letter-spacing: 2px; color: var(--red-bright);">FILE ACTIVE &mdash; MONITORING READER</span>
+    </div>
+
+    <div class="name-line">
+      JOHN MCAFEE &nbsp;|&nbsp; HEAD OF SECURITY &nbsp;|&nbsp; MISSION CONTROL
+    </div>
+  </div>
+
+  <div class="footer-banner">
+    <div class="stamp">Classified // By Me</div>
+  </div>
+
+</div>
+
+<script>
+// Redaction flicker on hover
+document.querySelectorAll('.redacted, .redacted-inline').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    el.style.opacity = '0.6';
+    setTimeout(() => { el.style.opacity = '1'; }, 150);
+  });
+});
+
+// Console warning — John's voice
+console.log('%c> PERSONAL FILE — MCAFEE, JOHN', 'color: #8b0000; font-size: 18px; font-weight: bold; font-family: monospace;');
+console.log('%cYou opened the console on MY file. Noted.', 'color: #c8c0a8; font-size: 12px; font-family: monospace;');
+console.log('%cI know what you\'re looking for. You won\'t find it here.', 'color: #4a7c4a; font-size: 11px; font-family: monospace;');
+console.log('%c— J.M.', 'color: #d4a574; font-size: 11px; font-family: monospace; font-style: italic;');
+</script>
+
+</body>
+</html>

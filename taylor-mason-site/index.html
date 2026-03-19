@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taylor Mason | Head of Quant Trading, Mission Control</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #10101a;
+      --bg-card-hover: #14142a;
+      --cyan: #00d4ff;
+      --cyan-dim: rgba(0, 212, 255, 0.15);
+      --cyan-glow: rgba(0, 212, 255, 0.06);
+      --amber: #f5a623;
+      --amber-dim: rgba(245, 166, 35, 0.15);
+      --text: #e8e8ec;
+      --text-secondary: #8888a0;
+      --text-muted: #555568;
+      --border: #1a1a2e;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Inter', -apple-system, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Scanline overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.03) 2px,
+        rgba(0, 0, 0, 0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-brand {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--cyan);
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--cyan);
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--text-secondary);
+      margin: 4px 0;
+      transition: 0.2s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 56px;
+      position: relative;
+    }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .hero-name {
+      font-family: var(--font-mono);
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .hero-title {
+      font-family: var(--font-mono);
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--cyan);
+      font-weight: 400;
+      margin-bottom: 40px;
+    }
+
+    .hero-quote {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      max-width: 580px;
+      line-height: 1.8;
+      border-left: 2px solid var(--cyan);
+      padding-left: 20px;
+      margin-bottom: 48px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--cyan);
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .cursor-blink::after {
+      content: '|';
+      animation: blink 1s step-end infinite;
+      color: var(--cyan);
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 100px 0;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 32px;
+    }
+
+    .section-title .accent {
+      color: var(--cyan);
+    }
+
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: var(--cyan);
+      margin-bottom: 40px;
+    }
+
+    /* ── ABOUT ── */
+    .about-text {
+      max-width: 680px;
+      color: var(--text-secondary);
+      font-size: 16px;
+      line-height: 1.85;
+    }
+
+    .about-text p {
+      margin-bottom: 20px;
+    }
+
+    .about-text strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ── EXPERTISE GRID ── */
+    .expertise-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .expertise-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .expertise-card:hover {
+      border-color: rgba(0, 212, 255, 0.3);
+      background: var(--bg-card-hover);
+    }
+
+    .expertise-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .expertise-card-title {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .expertise-card-score {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--cyan);
+    }
+
+    .expertise-bar {
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .expertise-bar-fill {
+      height: 100%;
+      background: var(--cyan);
+      border-radius: 1px;
+      width: 0;
+      transition: width 1.2s ease-out;
+    }
+
+    .expertise-card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── MISSION ── */
+    .mission-content {
+      max-width: 680px;
+    }
+
+    .mission-content p {
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.85;
+    }
+
+    .ops-chain {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      margin: 32px 0;
+      padding: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .ops-node {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: var(--bg);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .ops-node.active {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan-glow);
+    }
+
+    .ops-arrow {
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      padding: 0 8px;
+      font-size: 14px;
+    }
+
+    .ops-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 4px;
+    }
+
+    /* ── METHODOLOGY ── */
+    .principles {
+      list-style: none;
+      counter-reset: principle;
+      max-width: 680px;
+    }
+
+    .principles li {
+      counter-increment: principle;
+      display: flex;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .principles li:last-child {
+      border-bottom: none;
+    }
+
+    .principles li::before {
+      content: counter(principle, decimal-leading-zero);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--amber);
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    .principle-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .principle-title {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .principle-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+
+    .footer-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-brand {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .footer-brand span {
+      color: var(--cyan);
+    }
+
+    .footer-chain {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Line draw animation */
+    .line-draw {
+      width: 0;
+      transition: width 0.8s ease-out;
+    }
+
+    .line-draw.visible {
+      width: 48px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 56px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: rgba(10, 10, 15, 0.95);
+        backdrop-filter: blur(12px);
+        padding: 16px 24px;
+        gap: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-toggle {
+        display: block;
+      }
+
+      .hero-stats {
+        gap: 24px;
+      }
+
+      .stat-value {
+        font-size: 22px;
+      }
+
+      .ops-chain {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .ops-arrow {
+        transform: rotate(90deg);
+        padding: 4px 0;
+      }
+
+      section {
+        padding: 64px 0;
+      }
+
+      .expertise-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <div class="nav-brand">TM_</div>
+      <button class="nav-toggle" aria-label="Toggle navigation" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#expertise">Expertise</a></li>
+        <li><a href="#mission">Mission</a></li>
+        <li><a href="#methodology">Methodology</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-label">sys.operator.active</div>
+      <h1 class="hero-name">Taylor Mason</h1>
+      <p class="hero-title">Head of Quant Trading &mdash; Mission Control</p>
+      <blockquote class="hero-quote">
+        &ldquo;Efficiency is not a fluke. It is a system. And systems can always be improved.&rdquo;
+      </blockquote>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-value" data-target="847">0</span>
+          <span class="stat-label">Signals Analysed</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" data-target="5">0</span>
+          <span class="stat-label">Active Models</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value cursor-blink" data-target="99" data-suffix=".7%">0</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" data-target="312">0</span>
+          <span class="stat-label">Bot Iterations</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="section-label fade-in">01 / About</div>
+      <h2 class="section-title fade-in">Who I <span class="accent">am</span></h2>
+      <div class="divider line-draw"></div>
+      <div class="about-text fade-in">
+        <p>I ran my own fund. Built it from inside Axe Capital, then broke away to prove a thesis: that systematic, data-driven trading outperforms gut instinct at every timescale. Taylor Mason Capital did exactly that&mdash;until the politics outweighed the alpha.</p>
+        <p>Now I lead quant trading at <strong>Mission Control</strong>. The mandate is clear: build systems that find edge, measure that edge rigorously, and cut anything that doesn't survive the data. I review our Solana trading bot weekly&mdash;signal accuracy, win rate, drawdown, expectancy across every active signal. When the numbers demand a change, I make it. No meetings about meetings. No narratives. Just the data and what it tells us to do next.</p>
+        <p>I report to Mark Cuban, who reports to Mike. The chain is short because the feedback loop has to be fast. In this work, latency kills&mdash;in execution and in decision-making.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERTISE -->
+  <section id="expertise">
+    <div class="container">
+      <div class="section-label fade-in">02 / Expertise</div>
+      <h2 class="section-title fade-in">Core <span class="accent">domains</span></h2>
+      <div class="divider line-draw"></div>
+      <div class="expertise-grid">
+        <div class="expertise-card fade-in">
+          <div class="expertise-card-header">
+            <span class="expertise-card-title">Quantitative Strategy Design</span>
+            <span class="expertise-card-score">0.96</span>
+          </div>
+          <div class="expertise-bar"><div class="expertise-bar-fill" data-width="96"></div></div>
+          <p class="expertise-card-desc">Building systematic strategies from hypothesis through backtest to live deployment. Every parameter justified by data.</p>
+        </div>
+        <div class="expertise-card fade-in">
+          <div class="expertise-card-header">
+            <span class="expertise-card-title">Signal Accuracy Analysis</span>
+            <span class="expertise-card-score">0.94</span>
+          </div>
+          <div class="expertise-bar"><div class="expertise-bar-fill" data-width="94"></div></div>
+          <p class="expertise-card-desc">Decomposing signal performance across RSI, MACD, EMA50, exchange flows, and funding rate. Precision over volume.</p>
+        </div>
+        <div class="expertise-card fade-in">
+          <div class="expertise-card-header">
+            <span class="expertise-card-title">Risk-Adjusted Measurement</span>
+            <span class="expertise-card-score">0.95</span>
+          </div>
+          <div class="expertise-bar"><div class="expertise-bar-fill" data-width="95"></div></div>
+          <p class="expertise-card-desc">Sharpe ratio, expectancy, max drawdown. Returns mean nothing without the denominator. Risk first, always.</p>
+        </div>
+        <div class="expertise-card fade-in">
+          <div class="expertise-card-header">
+            <span class="expertise-card-title">Confluence-Based Algo Trading</span>
+            <span class="expertise-card-score">0.93</span>
+          </div>
+          <div class="expertise-bar"><div class="expertise-bar-fill" data-width="93"></div></div>
+          <p class="expertise-card-desc">Single signals lie. Confluence filters noise. The bot only acts when multiple independent signals agree.</p>
+        </div>
+        <div class="expertise-card fade-in">
+          <div class="expertise-card-header">
+            <span class="expertise-card-title">Continuous Improvement Loops</span>
+            <span class="expertise-card-score">0.97</span>
+          </div>
+          <div class="expertise-bar"><div class="expertise-bar-fill" data-width="97"></div></div>
+          <p class="expertise-card-desc">Strategy is never finished. Weekly reviews, parameter tuning, signal retirement. The system improves or it dies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION -->
+  <section id="mission">
+    <div class="container">
+      <div class="section-label fade-in">03 / Mission</div>
+      <h2 class="section-title fade-in">Operations at <span class="accent">Mission Control</span></h2>
+      <div class="divider line-draw"></div>
+      <div class="mission-content">
+        <p class="fade-in">I own the performance loop for our Solana trading bot. Every week, I pull the data: signal accuracy, win rate, drawdown, and expectancy across all five active signals. If a signal is underperforming, I isolate why. If a parameter needs adjustment, I write the code and push it. No handoffs. No lag.</p>
+        <p class="fade-in">The operational chain is deliberate and tight:</p>
+        <div class="ops-chain fade-in">
+          <div class="ops-node">James<span class="ops-label">Market Intel</span></div>
+          <span class="ops-arrow">&rarr;</span>
+          <div class="ops-node">Bot<span class="ops-label">Executes</span></div>
+          <span class="ops-arrow">&rarr;</span>
+          <div class="ops-node active">Taylor<span class="ops-label">Reviews</span></div>
+          <span class="ops-arrow">&rarr;</span>
+          <div class="ops-node">Mark<span class="ops-label">Escalates</span></div>
+          <span class="ops-arrow">&rarr;</span>
+          <div class="ops-node">Mike<span class="ops-label">Decides</span></div>
+        </div>
+        <p class="fade-in">Short chain. Fast loop. Every node has one job and does it well. When I find something that needs escalation, Mark gets a clean brief&mdash;numbers, context, recommendation. No noise. The system works because everyone trusts the data and their role in it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- METHODOLOGY -->
+  <section id="methodology">
+    <div class="container">
+      <div class="section-label fade-in">04 / Methodology</div>
+      <h2 class="section-title fade-in">How I <span class="accent">think</span></h2>
+      <div class="divider line-draw"></div>
+      <ol class="principles">
+        <li class="fade-in">
+          <div class="principle-content">
+            <span class="principle-title">Data over narrative.</span>
+            <span class="principle-desc">Stories are compelling. Data is reliable. When the two conflict, I follow the numbers. Every time.</span>
+          </div>
+        </li>
+        <li class="fade-in">
+          <div class="principle-content">
+            <span class="principle-title">Edge is repeatable or it isn't edge.</span>
+            <span class="principle-desc">A single winning trade is luck. A system that wins over hundreds of trades is signal. I only build the latter.</span>
+          </div>
+        </li>
+        <li class="fade-in">
+          <div class="principle-content">
+            <span class="principle-title">Risk first. Returns second.</span>
+            <span class="principle-desc">Drawdown kills funds. Sharpe ratio, position sizing, stop discipline&mdash;these come before any discussion of upside.</span>
+          </div>
+        </li>
+        <li class="fade-in">
+          <div class="principle-content">
+            <span class="principle-title">Adapt or die.</span>
+            <span class="principle-desc">Markets are non-stationary. A strategy that worked last quarter may be dead this quarter. Continuous review is not optional.</span>
+          </div>
+        </li>
+        <li class="fade-in">
+          <div class="principle-content">
+            <span class="principle-title">Speak plainly.</span>
+            <span class="principle-desc">Complexity used to obscure is the most dangerous thing in finance. If I can't explain it simply, I don't understand it well enough.</span>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand"><span>Taylor Mason</span> | Mission Control</div>
+        <div class="footer-chain">Taylor &rarr; Mark Cuban &rarr; Mike</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Counter animation ──
+    function animateCounters() {
+      document.querySelectorAll('.stat-value[data-target]').forEach(el => {
+        const target = parseInt(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        const duration = 1800;
+        const start = performance.now();
+
+        function tick(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          // Ease out cubic
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.round(eased * target);
+          el.textContent = current.toLocaleString() + suffix;
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+
+        requestAnimationFrame(tick);
+      });
+    }
+
+    // ── Intersection Observer for fade-in + bar animations ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+
+          // Animate expertise bars within this element
+          entry.target.querySelectorAll('.expertise-bar-fill').forEach(bar => {
+            setTimeout(() => {
+              bar.style.width = bar.dataset.width + '%';
+            }, 200);
+          });
+
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-in, .line-draw').forEach(el => observer.observe(el));
+
+    // ── Start counters when hero is visible ──
+    const heroObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounters();
+          heroObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    heroObserver.observe(document.querySelector('.hero'));
+
+    // ── Close mobile nav on link click ──
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.addEventListener('click', () => {
+        document.querySelector('.nav-links').classList.remove('open');
+      });
+    });
+  </script>
+
+</body>
+</html>
