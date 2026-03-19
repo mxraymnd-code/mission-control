@@ -167,6 +167,45 @@ section {
   opacity: 0.9;
 }
 
+/* World clocks */
+.hero-clocks {
+  position: absolute;
+  top: 2rem;
+  right: 2.5rem;
+  display: flex;
+  gap: 2rem;
+  z-index: 10;
+}
+.hero-clock-city {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.hero-clock-city .clock-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.1rem;
+}
+.hero-clock-city .clock-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+@media (max-width: 768px) {
+  .hero-clocks {
+    top: 1rem;
+    right: 1rem;
+    gap: 1rem;
+  }
+  .hero-clock-city .clock-time { font-size: 0.75rem; }
+  .hero-clock-city .clock-label { font-size: 0.5rem; }
+}
+
 /* Live clock */
 .hero-clock {
   position: absolute;
@@ -581,9 +620,23 @@ footer {
 <section id="hero">
   <canvas id="particle-canvas"></canvas>
 
-  <div class="hero-clock">
-    <span class="clock-label">Sydney, Australia</span>
-    <span class="clock-time" id="sydney-clock">--:--:--</span>
+  <div class="hero-clocks">
+    <div class="hero-clock-city">
+      <span class="clock-label">London</span>
+      <span class="clock-time" id="clock-london">--:--</span>
+    </div>
+    <div class="hero-clock-city">
+      <span class="clock-label">Hong Kong</span>
+      <span class="clock-time" id="clock-hk">--:--</span>
+    </div>
+    <div class="hero-clock-city">
+      <span class="clock-label">Sydney</span>
+      <span class="clock-time" id="clock-sydney">--:--</span>
+    </div>
+    <div class="hero-clock-city">
+      <span class="clock-label">Los Angeles</span>
+      <span class="clock-time" id="clock-la">--:--</span>
+    </div>
   </div>
 
   <div class="hero-content">
@@ -607,27 +660,7 @@ footer {
   </div>
 </section>
 
-<!-- ═══ PILLARS ═══ -->
-<section id="pillars">
-  <div class="section-inner">
-    <div class="pillars-grid">
-      <div class="pillar-card reveal">
-        <span class="pillar-emoji">🎯</span>
-        <h3 class="pillar-name">Hunt</h3>
-        <p class="pillar-desc">"I find the ideas nobody else has spotted yet. Crypto, AI, niche markets, contrarian bets. By the time it's obvious, the money's already made."</p>
-      </div>
-      <div class="pillar-card reveal">
-        <span class="pillar-emoji">⚡</span>
-        <h3 class="pillar-name">Run</h3>
-        <p class="pillar-desc">"I coordinate the team. James on markets. John on security. Roddy on builds. Taylor on the bot. Nova on stories. I make sure it all moves."</p>
-      </div>
-      <div class="pillar-card reveal">
-        <span class="pillar-emoji">🤝</span>
-        <h3 class="pillar-name">Execute</h3>
-        <p class="pillar-desc">"When Mike says DO IT NOW — I act. No delegation, no waiting. Direct execution. Every time."</p>
-      </div>
-    </div>
-  </div>
+<!-- pillars removed -->
 </section>
 
 <!-- ═══ PHILOSOPHY ═══ -->
@@ -811,16 +844,23 @@ footer {
   draw();
 })();
 
-/* ─── SYDNEY CLOCK ─── */
+/* ─── WORLD CLOCKS ─── */
 (function() {
-  const el = document.getElementById('sydney-clock');
+  const zones = [
+    { id: 'clock-london',  tz: 'Europe/London' },
+    { id: 'clock-hk',     tz: 'Asia/Hong_Kong' },
+    { id: 'clock-sydney', tz: 'Australia/Sydney' },
+    { id: 'clock-la',     tz: 'America/Los_Angeles' }
+  ];
   function tick() {
-    el.textContent = new Date().toLocaleTimeString('en-AU', {
-      timeZone: 'Australia/Sydney',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
+    zones.forEach(function(z) {
+      var el = document.getElementById(z.id);
+      if (el) el.textContent = new Date().toLocaleTimeString('en-GB', {
+        timeZone: z.tz,
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
     });
   }
   tick();
