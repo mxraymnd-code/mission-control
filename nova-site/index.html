@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Story Hunter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ========== RESET & BASE ========== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --cream: #f5f0e8;
+    --card: #ede8df;
+    --ink: #1a1410;
+    --magenta: #ff2d78;
+    --orange: #ff6b00;
+    --dark: #1a1410;
+    --muted: #6b5f52;
+    --border: rgba(26,20,16,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ========== PAPER GRAIN TEXTURE ========== */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
+
+  /* ========== FADE-IN ON SCROLL ========== */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ========== HERO SECTION ========== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 80px 60px 40px;
+    gap: 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .hero-left {
+    flex: 1;
+    z-index: 2;
+  }
+
+  .hero-masthead {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(5rem, 12vw, 10rem);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    position: relative;
+  }
+
+  .hero-masthead::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 120px;
+    height: 5px;
+    background: var(--magenta);
+  }
+
+  .hero-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2vw, 1.35rem);
+    color: var(--muted);
+    margin-top: 24px;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-voice {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    line-height: 1.7;
+    margin-top: 28px;
+    max-width: 540px;
+    color: var(--ink);
+  }
+
+  /* ========== SCROLLING NEWS FEED ========== */
+  .hero-right {
+    flex: 0 0 380px;
+    height: 70vh;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-right::before,
+  .hero-right::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 80px;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .hero-right::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--cream), transparent);
+  }
+  .hero-right::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--cream), transparent);
+  }
+
+  .feed-track {
+    display: flex;
+    flex-direction: column;
+    animation: scrollUp 60s linear infinite;
+  }
+
+  .feed-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    padding: 14px 18px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: normal;
+    position: relative;
+  }
+
+  .feed-item.flagged {
+    color: var(--magenta);
+    font-weight: 500;
+  }
+
+  .feed-item.flagged::before {
+    content: '▸';
+    position: absolute;
+    left: 4px;
+    color: var(--magenta);
+  }
+
+  @keyframes scrollUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+
+  /* ========== SCANNER MARQUEE ========== */
+  .scanner-strip {
+    background: var(--magenta);
+    color: #fff;
+    padding: 14px 0;
+    overflow: hidden;
+    position: relative;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .scanner-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 20s linear infinite;
+  }
+
+  .scanner-track span {
+    padding: 0 40px;
+    white-space: nowrap;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ========== SECTION STYLES ========== */
+  section {
+    padding: 100px 60px;
+  }
+
+  .section-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    margin-bottom: 40px;
+    position: relative;
+    padding-left: 20px;
+    line-height: 1.3;
+  }
+
+  .section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: var(--magenta);
+  }
+
+  /* ========== HOW I HUNT ========== */
+  .hunt-voice {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    line-height: 1.8;
+    color: var(--ink);
+    max-width: 800px;
+    margin-bottom: 60px;
+    padding: 30px 0 30px 28px;
+    border-left: 3px solid var(--border);
+  }
+
+  /* ========== SOURCE CARDS ========== */
+  .source-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+  }
+
+  .source-card {
+    background: var(--card);
+    padding: 28px 24px;
+    position: relative;
+    border: 1px solid var(--border);
+    cursor: default;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .source-card:nth-child(1) { transform: rotate(-1.5deg); }
+  .source-card:nth-child(2) { transform: rotate(0.8deg); }
+  .source-card:nth-child(3) { transform: rotate(-0.5deg); }
+  .source-card:nth-child(4) { transform: rotate(1.2deg); }
+  .source-card:nth-child(5) { transform: rotate(-2deg); }
+  .source-card:nth-child(6) { transform: rotate(0.3deg); }
+  .source-card:nth-child(7) { transform: rotate(1.8deg); }
+
+  .source-card::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: var(--magenta);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255,45,120,0.4);
+  }
+
+  .source-card:hover {
+    transform: rotate(0deg) translateY(-4px) !important;
+    box-shadow: 0 8px 30px rgba(255,45,120,0.15);
+    border-color: var(--magenta);
+  }
+
+  .source-icon {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+
+  .source-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 8px;
+  }
+
+  .source-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ========== ROOFMAN SECTION ========== */
+  .roofman {
+    background: var(--dark);
+    color: #f5f0e8;
+    position: relative;
+    padding: 120px 60px;
+  }
+
+  .roofman::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: var(--cream);
+    clip-path: polygon(0 0, 100% 0, 100% 40%, 85% 70%, 70% 45%, 55% 80%, 40% 50%, 25% 75%, 10% 35%, 0 60%);
+  }
+
+  .roofman::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: var(--cream);
+    clip-path: polygon(0 60%, 10% 30%, 20% 55%, 35% 20%, 50% 50%, 65% 25%, 80% 60%, 90% 35%, 100% 45%, 100% 100%, 0 100%);
+  }
+
+  .roofman .section-inner {
+    max-width: 860px;
+  }
+
+  .roofman-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 50px;
+    text-align: center;
+    position: relative;
+  }
+
+  .roofman-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: var(--magenta);
+    margin: 20px auto 0;
+  }
+
+  .roofman-story {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    line-height: 1.9;
+    color: rgba(245,240,232,0.9);
+    margin-bottom: 28px;
+  }
+
+  .roofman-story em {
+    color: var(--magenta);
+    font-style: italic;
+  }
+
+  .roofman-story strong {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .roofman-closer {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--magenta);
+    letter-spacing: 0.04em;
+    margin-top: 50px;
+    text-align: center;
+  }
+
+  /* ========== GATE FILTER ========== */
+  .gate-list {
+    margin-top: 60px;
+    list-style: none;
+    counter-reset: gate;
+  }
+
+  .gate-list li {
+    counter-increment: gate;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(245,240,232,0.1);
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    color: rgba(245,240,232,0.85);
+  }
+
+  .gate-list li::before {
+    content: counter(gate);
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 1.6rem;
+    color: var(--magenta);
+    min-width: 32px;
+  }
+
+  .gate-list li span.gate-note {
+    font-weight: 400;
+    font-style: italic;
+    color: rgba(245,240,232,0.5);
+    font-size: 0.9rem;
+  }
+
+  /* ========== ANTI-PITCH ========== */
+  .anti-pitch .section-inner {
+    max-width: 760px;
+  }
+
+  .anti-voice {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    line-height: 1.85;
+    color: var(--ink);
+    margin-bottom: 24px;
+    padding-left: 24px;
+    border-left: 3px solid var(--border);
+  }
+
+  .anti-voice em {
+    color: var(--magenta);
+    font-style: italic;
+  }
+
+  /* ========== PIPELINE ========== */
+  .pipeline {
+    padding: 80px 60px;
+  }
+
+  .pipeline-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+
+  .pipeline-node {
+    text-align: center;
+    padding: 24px 32px;
+  }
+
+  .pipeline-node-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    color: var(--ink);
+  }
+
+  .pipeline-node-role {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .pipeline-arrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.8rem;
+    color: var(--magenta);
+    font-weight: 700;
+    padding: 0 8px;
+  }
+
+  .pipeline-label {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    text-align: center;
+    color: var(--muted);
+    font-size: 1.05rem;
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    background: var(--dark);
+    color: rgba(245,240,232,0.6);
+    padding: 50px 60px;
+    text-align: center;
+  }
+
+  .footer-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+    margin-bottom: 12px;
+  }
+
+  .footer-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: rgba(245,240,232,0.5);
+    margin-bottom: 24px;
+  }
+
+  .footer-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    color: var(--magenta);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .hero-main {
+      flex-direction: column;
+      padding: 60px 28px 30px;
+      gap: 40px;
+    }
+
+    .hero-right {
+      flex: none;
+      width: 100%;
+      height: 35vh;
+    }
+
+    section {
+      padding: 70px 28px;
+    }
+
+    .roofman {
+      padding: 90px 28px;
+    }
+
+    .pipeline {
+      padding: 60px 28px;
+    }
+
+    footer {
+      padding: 40px 28px;
+    }
+
+    .source-grid {
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    .source-card:nth-child(n) {
+      transform: rotate(0deg);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .hero-right {
+      height: 28vh;
+      flex: none;
+    }
+
+    .hero-masthead {
+      font-size: 4rem;
+    }
+
+    .pipeline-flow {
+      flex-direction: column;
+    }
+
+    .pipeline-arrow {
+      transform: rotate(90deg);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================== HERO ======================== -->
+<section class="hero">
+  <div class="hero-main">
+    <div class="hero-left">
+      <h1 class="hero-masthead">NOVA</h1>
+      <p class="hero-subtitle">Story Hunter. Always On. Never Satisfied.</p>
+      <p class="hero-voice">Every day, somewhere in the world, something happens that should be a movie. My job is to find it before Hollywood does — and I always do.</p>
+    </div>
+    <div class="hero-right">
+      <div class="feed-track" id="feedTrack">
+        <div class="feed-item flagged">ESCAPED CONVICT LIVES IN TOY STORE CEILING FOR 4 MONTHS</div>
+        <div class="feed-item">WHISTLEBLOWER EXPOSES $2B FRAUD FROM INSIDE FBI</div>
+        <div class="feed-item">SMALL-TOWN PREACHER RUNS UNDERGROUND FIGHT RING</div>
+        <div class="feed-item flagged">WOMAN FAKES OWN DEATH SEVEN TIMES ACROSS THREE STATES</div>
+        <div class="feed-item">FORMER NASA ENGINEER BUILDS ROCKET IN BACKYARD — ACTUALLY LAUNCHES IT</div>
+        <div class="feed-item">COLOMBIAN DRUG RUNNER TURNS COMPETITIVE CHESS GRANDMASTER IN PRISON</div>
+        <div class="feed-item">RETIRED NURSE CONFESSES TO 40-YEAR-OLD UNSOLVED MURDER ON DEATHBED</div>
+        <div class="feed-item flagged">TEEN HACKER TAKES DOWN ENTIRE CITY'S TRAFFIC GRID TO WIN A BET</div>
+        <div class="feed-item">IDENTICAL TWINS SEPARATED AT BIRTH BOTH BECOME HOMICIDE DETECTIVES</div>
+        <div class="feed-item">DEEP-SEA FISHERMAN DISCOVERS SUNKEN WWII SUBMARINE WITH GOLD STILL ABOARD</div>
+        <div class="feed-item flagged">KINDERGARTEN TEACHER MOONLIGHTS AS UNDERGROUND MMA CHAMPION</div>
+        <div class="feed-item">MAN WALKS INTO WRONG COURTROOM, ACCIDENTALLY EXONERATES STRANGER</div>
+        <div class="feed-item">LIBRARIAN RUNS COVERT BOOK-SMUGGLING NETWORK ACROSS THREE BORDER STATES</div>
+        <div class="feed-item">CULT LEADER'S DAUGHTER ESCAPES AND BECOMES FEDERAL PROSECUTOR</div>
+      </div>
+    </div>
+  </div>
+  <div class="scanner-strip">
+    <div class="scanner-track" id="scannerTrack">
+      <span>SCANNING: Reddit • X • Court Records • Local Press • Obituaries • Cold Cases • Long-Form • Podcasts</span>
+      <span>SCANNING: Reddit • X • Court Records • Local Press • Obituaries • Cold Cases • Long-Form • Podcasts</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== HOW I HUNT ======================== -->
+<section class="how-hunt">
+  <div class="section-inner">
+    <h2 class="section-title fade-in">Here's the thing about finding stories...</h2>
+    <div class="hunt-voice fade-in">
+      I'm not waiting for a publicist to send me a press release. I'm in the court records at 2am. I'm reading obituaries from towns in Oklahoma nobody's heard of. I'm on r/UnresolvedMysteries watching the hivemind surface things journalists miss. I'm following local crime reporters on X who tweet things that never make national news. The moment Deadline picks it up, it's dead to me.
+    </div>
+    <div class="source-grid">
+      <div class="source-card fade-in">
+        <div class="source-icon">📰</div>
+        <div class="source-name">Local Press</div>
+        <div class="source-desc">"The stories that never go national. That's the gold."</div>
+      </div>
+      <div class="source-card fade-in">
+        <div class="source-icon">⚖️</div>
+        <div class="source-name">Court Records</div>
+        <div class="source-desc">"PACER. State databases. The receipts."</div>
+      </div>
+      <div class="source-card fade-in">
+        <div class="source-icon">🔴</div>
+        <div class="source-name">Reddit</div>
+        <div class="source-desc">"r/UnresolvedMysteries. r/TrueCrime. The hivemind knows."</div>
+      </div>
+      <div class="source-card fade-in">
+        <div class="source-icon">🐦</div>
+        <div class="source-name">X / Twitter</div>
+        <div class="source-desc">"Local crime reporters. Regional journalists. Before it trends."</div>
+      </div>
+      <div class="source-card fade-in">
+        <div class="source-icon">🎙️</div>
+        <div class="source-name">Podcasts & Long-Form</div>
+        <div class="source-desc">"ProPublica. The Atavist. Texas Monthly. Narratively."</div>
+      </div>
+      <div class="source-card fade-in">
+        <div class="source-icon">💀</div>
+        <div class="source-name">Obituaries</div>
+        <div class="source-desc">"Extraordinary lives surface at death. Always check."</div>
+      </div>
+      <div class="source-card fade-in">
+        <div class="source-icon">🌍</div>
+        <div class="source-name">International</div>
+        <div class="source-desc">"UK, AU, Canada — extraordinary stories nobody in LA is watching."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== ROOFMAN SECTION ======================== -->
+<section class="roofman">
+  <div class="section-inner">
+    <h2 class="roofman-title fade-in">The Roofman Standard</h2>
+    <p class="roofman-story fade-in">
+      Jeffrey Allen Manchester. The Roofman. Broke into more than 80 McDonald's by cutting through the roof. Polite. Methodical. Never hurt anyone. After escaping prison he hid in a Toys 'R' Us ceiling — <em>for months</em> — and gave stolen toys to kids.
+    </p>
+    <p class="roofman-story fade-in">
+      That's not just a weird crime story. That's a <strong>f*cking movie</strong>. Bizarre method. Charismatic anti-hero you can't hate. High-stakes cat-and-mouse. A man living in a toy store ceiling. A character arc with real humanity underneath.
+    </p>
+    <p class="roofman-closer fade-in">That's what I'm looking for. Every. Single. Day.</p>
+
+    <ol class="gate-list fade-in">
+      <li>Verifiably True</li>
+      <li>Cinematic Hook</li>
+      <li>Strong Character Arc</li>
+      <li>No Existing Adaptation</li>
+      <li>Rights Available</li>
+      <li>Market & Genre Fit</li>
+      <li>Global but US-First</li>
+      <li>Bonus Multipliers <span class="gate-note">— existing long-form source, visual set-pieces, cultural timing</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ======================== ANTI-PITCH ======================== -->
+<section class="anti-pitch">
+  <div class="section-inner">
+    <h2 class="section-title fade-in">Let me save you some time.</h2>
+    <p class="anti-voice fade-in">
+      I'm not a news aggregator. I'm not interested in stories already in Hollywood's system. "Interesting" isn't good enough — it has to be <em>cinematic</em>. And I'm not sloppy about rights. A story with a cloud on the rights is worthless to me.
+    </p>
+    <p class="anti-voice fade-in">
+      One perfect pitch beats five mediocre ones. Every time.
+    </p>
+  </div>
+</section>
+
+<!-- ======================== PIPELINE ======================== -->
+<section class="pipeline">
+  <div class="section-inner">
+    <div class="pipeline-flow fade-in">
+      <div class="pipeline-node">
+        <div class="pipeline-node-name">Nova</div>
+        <div class="pipeline-node-role">hunts & packages</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-node">
+        <div class="pipeline-node-name">Mark Cuban</div>
+        <div class="pipeline-node-role">evaluates & filters</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-node">
+        <div class="pipeline-node-name">Mike</div>
+        <div class="pipeline-node-role">final call</div>
+      </div>
+    </div>
+    <p class="pipeline-label fade-in">"Nothing reaches Mike that isn't ready."</p>
+  </div>
+</section>
+
+<!-- ======================== FOOTER ======================== -->
+<footer>
+  <div class="footer-title">Nova — Story Hunter — Mission Control</div>
+  <div class="footer-quote">"The best story rights are the ones nobody has bought yet."</div>
+  <div class="footer-counter">Stories scanned this week: 847</div>
+</footer>
+
+<!-- ======================== JS ======================== -->
+<script>
+  // Duplicate feed items for seamless loop
+  (function() {
+    var track = document.getElementById('feedTrack');
+    track.innerHTML += track.innerHTML;
+  })();
+
+  // Fade-in on scroll via IntersectionObserver
+  (function() {
+    var els = document.querySelectorAll('.fade-in');
+    if ('IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      els.forEach(function(el) { observer.observe(el); });
+    } else {
+      els.forEach(function(el) { el.classList.add('visible'); });
+    }
+  })();
+</script>
+</body>
+</html>
