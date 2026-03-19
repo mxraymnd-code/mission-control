@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>James — Head of Investments | Mission Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0e1a;
+  --surface: #0f1629;
+  --accent: #f5a623;
+  --teal: #00d4aa;
+  --danger: #e05c5c;
+  --text: #e8eaf0;
+  --text-dim: #6b7a99;
+  --border: #1e2d4a;
+  --surface-hover: #141d35;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════════════════════════
+   TICKER BAR
+   ═══════════════════════════════════════════════════ */
+.ticker-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  height: 44px;
+  overflow: hidden;
+}
+
+.ticker-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: tickerScroll 30s linear infinite;
+  white-space: nowrap;
+  width: max-content;
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 32px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  border-right: 1px solid var(--border);
+  height: 100%;
+}
+
+.ticker-symbol {
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.ticker-price { color: var(--text); }
+
+.ticker-change {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.ticker-change.positive {
+  color: var(--teal);
+  background: rgba(0, 212, 170, 0.1);
+}
+
+.ticker-change.negative {
+  color: var(--danger);
+  background: rgba(224, 92, 92, 0.1);
+}
+
+.ticker-stale {
+  font-size: 10px;
+  color: var(--text-dim);
+  opacity: 0.6;
+}
+
+.ticker-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.01) 2px,
+    rgba(255,255,255,0.01) 4px
+  );
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════ */
+.hero {
+  padding: 120px 24px 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(30, 45, 74, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 45, 74, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.hero-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+  opacity: 0.9;
+}
+
+.hero h1 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+
+.hero-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+.hero-bio {
+  max-width: 680px;
+  font-size: 15px;
+  color: var(--text-dim);
+  line-height: 1.75;
+  margin-bottom: 40px;
+}
+
+.hero-bio strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.terminal-line {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 15px;
+  color: var(--teal);
+  margin-bottom: 40px;
+  min-height: 24px;
+}
+
+.terminal-line .cursor {
+  display: inline-block;
+  width: 8px;
+  height: 18px;
+  background: var(--teal);
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Three-legged stool */
+.framework {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 700px;
+}
+
+.framework-leg {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--accent);
+  padding: 20px;
+  text-align: center;
+}
+
+.framework-leg .leg-icon {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.framework-leg .leg-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.framework-leg .leg-sub {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* ═══════════════════════════════════════════════════
+   THESIS CARDS SECTION
+   ═══════════════════════════════════════════════════ */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 24px;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.section-sub {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 40px;
+}
+
+.thesis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.thesis-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--accent);
+  padding: 28px 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.thesis-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.card-asset {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.card-horizon {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  letter-spacing: 0.5px;
+}
+
+.card-thesis {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.card-data-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.card-data-row .label {
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.card-data-row .value {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Conviction meter */
+.conviction-row {
+  margin: 16px 0;
+}
+
+.conviction-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.conviction-bar {
+  height: 6px;
+  background: rgba(245, 166, 35, 0.12);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.conviction-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #ffc964);
+  border-radius: 3px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 0 12px rgba(245, 166, 35, 0.4);
+}
+
+.deep-dive-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.deep-dive-btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.deep-dive-btn .arrow { transition: transform 0.2s ease; }
+.deep-dive-btn:hover .arrow { transform: translateX(4px); }
+
+/* ═══════════════════════════════════════════════════
+   QUOTE DIVIDER
+   ═══════════════════════════════════════════════════ */
+.quote-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.quote-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(16px, 2.5vw, 22px);
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.6;
+  position: relative;
+  padding: 0 24px;
+}
+
+.quote-text::before {
+  content: '"';
+  position: absolute;
+  left: -8px;
+  top: -12px;
+  font-size: 60px;
+  color: var(--accent);
+  opacity: 0.3;
+  font-family: Georgia, serif;
+}
+
+.quote-attr {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-quote {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: #ffc964; }
+
+.footer-bottom {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.5px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ═══════════════════════════════════════════════════
+   DEEP DIVE OVERLAY
+   ═══════════════════════════════════════════════════ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(6, 8, 16, 0.97);
+  display: none;
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.overlay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.overlay-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.overlay-counter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.overlay-close {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  transition: all 0.2s;
+}
+
+.overlay-close:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.overlay-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 24px;
+}
+
+.slide {
+  display: none;
+  max-width: 780px;
+  width: 100%;
+  animation: slideIn 0.3s ease;
+}
+
+.slide.active { display: block; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-cover {
+  text-align: center;
+  padding: 60px 0;
+}
+
+.slide-cover .slide-asset {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.slide-cover .slide-conviction {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  color: var(--accent);
+  margin-bottom: 32px;
+}
+
+.slide-cover .slide-author {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.slide h2 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.slide p {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.slide .data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+.slide .data-table th {
+  text-align: left;
+  padding: 10px 12px;
+  color: var(--accent);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.slide .data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(30, 45, 74, 0.4);
+  color: var(--text);
+}
+
+.slide .data-table tr:hover td {
+  background: rgba(245, 166, 35, 0.03);
+}
+
+.slide .highlight {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.slide .teal { color: var(--teal); }
+.slide .red { color: var(--danger); }
+
+.slide .bar-chart {
+  margin: 20px 0;
+}
+
+.slide .bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.slide .bar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  min-width: 120px;
+  text-align: right;
+}
+
+.slide .bar-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(245, 166, 35, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.slide .bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--accent);
+}
+
+.slide .bar-fill.teal-bar { background: var(--teal); }
+.slide .bar-fill.red-bar { background: var(--danger); }
+
+.slide .bar-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  min-width: 50px;
+}
+
+.slide .verdict-box {
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  padding: 32px;
+  text-align: center;
+  margin: 24px 0;
+}
+
+.verdict-box .verdict-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.verdict-box .verdict-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+
+.verdict-box .verdict-sub {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.overlay-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 32px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  padding: 10px 24px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.nav-btn:disabled:hover {
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.nav-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .framework { grid-template-columns: 1fr; gap: 12px; }
+  .thesis-grid { grid-template-columns: 1fr; }
+  .overlay-header { padding: 12px 16px; }
+  .overlay-body { padding: 24px 16px; }
+  .overlay-nav { padding: 16px; gap: 12px; }
+  .nav-btn { padding: 8px 16px; font-size: 12px; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  .footer-bottom { flex-direction: column; }
+  .hero { padding: 100px 16px 60px; }
+  .section { padding: 40px 16px; }
+  .quote-section { padding: 60px 16px; }
+  .slide .data-table { font-size: 11px; }
+  .slide .data-table th, .slide .data-table td { padding: 8px 6px; }
+}
+
+@media (max-width: 480px) {
+  .ticker-item { padding: 0 16px; font-size: 11px; }
+  .card-header { flex-direction: column; gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     TICKER BAR
+     ═══════════════════════════════════════════════════ -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="tickerTrack"></div>
+  <div class="ticker-scanline"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-label">Mission Control — Investments Division</div>
+  <h1>James</h1>
+  <div class="hero-title">Head of Investments</div>
+  <div class="terminal-line" id="terminalLine"><span class="cursor"></span></div>
+  <p class="hero-bio">
+    I don't hype. I model. I don't speculate. I probability-weight. Every position I take
+    is backed by data, stress-tested against macro, and pressure-rated for drawdown.
+    <strong>My parents were taken by cancer — time is finite, it compounds, and you don't get it back.</strong>
+    So I invest in the future. In disruptors. In the trailblazers who redefine the status quo.
+    <strong>#KPM — Knowledge Per Minute. Every word earns its place.</strong>
+  </p>
+
+  <div class="framework">
+    <div class="framework-leg">
+      <div class="leg-icon">LEG 01</div>
+      <div class="leg-label">Crypto</div>
+      <div class="leg-sub">BTC · SOL · On-chain</div>
+    </div>
+    <div class="framework-leg">
+      <div class="leg-icon">LEG 02</div>
+      <div class="leg-label">Disruptive Equities</div>
+      <div class="leg-sub">TSLA · AI · Robotics</div>
+    </div>
+    <div class="framework-leg">
+      <div class="leg-icon">LEG 03</div>
+      <div class="leg-label">Macro</div>
+      <div class="leg-sub">M2 · Fed · Global flows</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     ACTIVE THESES
+     ═══════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-label">Portfolio</div>
+  <div class="section-title">Active Theses</div>
+  <div class="section-sub">Macro is the tide. Everything else is a boat.</div>
+
+  <div class="thesis-grid">
+    <!-- TESLA -->
+    <div class="thesis-card">
+      <div class="card-header">
+        <div class="card-asset">TSLA</div>
+        <div class="card-horizon">36M HORIZON</div>
+      </div>
+      <p class="card-thesis">The AI + Energy convergence play. Tesla sits at the intersection of disruptive equity and macro bet — AI, energy, robotics converging into one vehicle.</p>
+      <div class="conviction-row">
+        <div class="conviction-label">
+          <span>CONVICTION</span>
+          <span style="color:var(--accent);">9 / 10</span>
+        </div>
+        <div class="conviction-bar">
+          <div class="conviction-fill" data-target="90"></div>
+        </div>
+      </div>
+      <div class="card-data-row">
+        <span class="label">Bull Target</span>
+        <span class="value">$800</span>
+      </div>
+      <div class="card-data-row">
+        <span class="label">Key Drivers</span>
+        <span class="value" style="font-size:11px;">FSD · Optimus · Energy</span>
+      </div>
+      <div class="card-data-row">
+        <span class="label">Prob-Weighted</span>
+        <span class="value">70% → 3.2×</span>
+      </div>
+      <button class="deep-dive-btn" onclick="openDeck('tesla')">Deep Dive <span class="arrow">→</span></button>
+    </div>
+
+    <!-- BITCOIN -->
+    <div class="thesis-card">
+      <div class="card-header">
+        <div class="card-asset">BTC</div>
+        <div class="card-horizon">24M HORIZON</div>
+      </div>
+      <p class="card-thesis">The macro reserve asset. Digital gold. Fed policy hedge. M2 expansion beneficiary. Not speculation — this is a probability-weighted position on monetary history.</p>
+      <div class="conviction-row">
+        <div class="conviction-label">
+          <span>CONVICTION</span>
+          <span style="color:var(--accent);">9 / 10</span>
+        </div>
+        <div class="conviction-bar">
+          <div class="conviction-fill" data-target="90"></div>
+        </div>
+      </div>
+      <div class="card-data-row">
+        <span class="label">Bull Target</span>
+        <span class="value">$250,000</span>
+      </div>
+      <div class="card-data-row">
+        <span class="label">Key Drivers</span>
+        <span class="value" style="font-size:11px;">Halving · Institutions · M2</span>
+      </div>
+      <div class="card-data-row">
+        <span class="label">Prob-Weighted</span>
+        <span class="value">65% → 2.8×</span>
+      </div>
+      <button class="deep-dive-btn" onclick="openDeck('bitcoin')">Deep Dive <span class="arrow">→</span></button>
+    </div>
+
+    <!-- SOLANA -->
+    <div class="thesis-card">
+      <div class="card-header">
+        <div class="card-asset">SOL</div>
+        <div class="card-horizon">18M HORIZON</div>
+      </div>
+      <p class="card-thesis">The high-performance L1. While others debate scaling, Solana ships. DePIN, DeFi velocity, and a developer ecosystem that's compounding faster than the market prices in.</p>
+      <div class="conviction-row">
+        <div class="conviction-label">
+          <span>CONVICTION</span>
+          <span style="color:var(--accent);">8 / 10</span>
+        </div>
+        <div class="conviction-bar">
+          <div class="conviction-fill" data-target="80"></div>
+        </div>
+      </div>
+      <div class="card-data-row">
+        <span class="label">Bull Target</span>
+        <span class="value">$500</span>
+      </div>
+      <div class="card-data-row">
+        <span class="label">Key Drivers</span>
+        <span class="value" style="font-size:11px;">DePIN · DeFi · DevEco</span>
+      </div>
+      <div class="card-data-row">
+        <span class="label">Prob-Weighted</span>
+        <span class="value">60% → 3.5×</span>
+      </div>
+      <button class="deep-dive-btn" onclick="openDeck('solana')">Deep Dive <span class="arrow">→</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     QUOTE DIVIDER
+     ═══════════════════════════════════════════════════ -->
+<section class="quote-section">
+  <div class="quote-text">Invest in disruptors — the trailblazers who redefine the status quo.</div>
+  <div class="quote-attr">— JAMES · HEAD OF INVESTMENTS</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-quote">"I'm not here to tell you what you want to hear. I'm here to tell you what the data says — and what to do about it."</div>
+    <div class="footer-links">
+      <a href="https://www.coingecko.com/en/coins/bitcoin" target="_blank" rel="noopener">BTC ↗</a>
+      <a href="https://www.coingecko.com/en/coins/solana" target="_blank" rel="noopener">SOL ↗</a>
+      <a href="https://finance.yahoo.com/quote/TSLA" target="_blank" rel="noopener">TSLA ↗</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>MISSION CONTROL — INVESTMENTS DIVISION</span>
+    <span>DATA REFRESHES EVERY 30s · PRICES ARE INDICATIVE</span>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════
+     DEEP DIVE OVERLAY
+     ═══════════════════════════════════════════════════ -->
+<div class="overlay" id="overlay">
+  <div class="overlay-header">
+    <div class="overlay-title" id="overlayTitle"></div>
+    <div class="overlay-counter" id="overlayCounter"></div>
+    <button class="overlay-close" onclick="closeDeck()" title="Close (ESC)">✕</button>
+  </div>
+  <div class="overlay-body">
+    <div id="slideContainer"></div>
+  </div>
+  <div class="overlay-nav">
+    <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← Prev</button>
+    <span class="nav-hint">← → keys to navigate · ESC to close</span>
+    <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════ -->
+<script>
+/* ─── TICKER ─── */
+const TICKER_ASSETS = [
+  { symbol: 'BTC', name: 'Bitcoin', fallback: 87500 },
+  { symbol: 'ETH', name: 'Ethereum', fallback: 3200 },
+  { symbol: 'SOL', name: 'Solana', fallback: 142 },
+  { symbol: 'TSLA', name: 'Tesla', fallback: 272, static: true }
+];
+
+const COINGECKO_IDS = { BTC: 'bitcoin', ETH: 'ethereum', SOL: 'solana' };
+let tickerData = {};
+
+function formatPrice(p) {
+  if (p >= 1000) return '$' + p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (p >= 1) return '$' + p.toFixed(2);
+  return '$' + p.toFixed(4);
+}
+
+function renderTicker() {
+  const track = document.getElementById('tickerTrack');
+  let html = '';
+  const items = TICKER_ASSETS.map(a => {
+    const d = tickerData[a.symbol] || { price: a.fallback, change: 0, stale: true };
+    const changeClass = d.change >= 0 ? 'positive' : 'negative';
+    const changeStr = (d.change >= 0 ? '+' : '') + d.change.toFixed(2) + '%';
+    return `<div class="ticker-item">
+      <span class="ticker-symbol">${a.symbol}</span>
+      <span class="ticker-price">${formatPrice(d.price)}</span>
+      <span class="ticker-change ${changeClass}">${changeStr}</span>
+      ${d.stale ? '<span class="ticker-stale">●</span>' : ''}
+    </div>`;
+  }).join('');
+  // Duplicate for seamless scroll
+  html = items + items + items;
+  track.innerHTML = html;
+}
+
+async function fetchPrices() {
+  try {
+    const ids = Object.values(COINGECKO_IDS).join(',');
+    const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    for (const [sym, id] of Object.entries(COINGECKO_IDS)) {
+      if (data[id]) {
+        tickerData[sym] = {
+          price: data[id].usd,
+          change: data[id].usd_24h_change || 0,
+          stale: false
+        };
+      }
+    }
+    // TSLA static
+    tickerData['TSLA'] = { price: 272.06, change: 1.34, stale: true };
+  } catch (e) {
+    // Use fallbacks
+    TICKER_ASSETS.forEach(a => {
+      if (!tickerData[a.symbol]) {
+        tickerData[a.symbol] = { price: a.fallback, change: 0, stale: true };
+      }
+    });
+  }
+  renderTicker();
+}
+
+fetchPrices();
+setInterval(fetchPrices, 30000);
+
+/* ─── TERMINAL TYPING EFFECT ─── */
+const phrases = [
+  "I don't hype. I model. I don't speculate. I probability-weight.",
+  "Macro is the tide. Everything else is a boat.",
+  "70% probability of 3.2× in 36 months, downside protected to 0.8×.",
+  "#KPM — Knowledge Per Minute. Every word earns its place.",
+  "Invest in disruptors — the trailblazers who redefine the status quo."
+];
+
+let phraseIdx = 0, charIdx = 0, isDeleting = false;
+const terminalEl = document.getElementById('terminalLine');
+
+function typeEffect() {
+  const current = phrases[phraseIdx];
+  if (!isDeleting) {
+    charIdx++;
+    if (charIdx > current.length) {
+      setTimeout(() => { isDeleting = true; typeEffect(); }, 2400);
+      return;
+    }
+  } else {
+    charIdx--;
+    if (charIdx < 0) {
+      charIdx = 0;
+      isDeleting = false;
+      phraseIdx = (phraseIdx + 1) % phrases.length;
+      setTimeout(typeEffect, 400);
+      return;
+    }
+  }
+  terminalEl.innerHTML = `<span style="color:var(--text-dim);">$ </span>${current.substring(0, charIdx)}<span class="cursor"></span>`;
+  setTimeout(typeEffect, isDeleting ? 20 : 45);
+}
+
+setTimeout(typeEffect, 800);
+
+/* ─── CONVICTION BAR ANIMATION ─── */
+function animateBars() {
+  document.querySelectorAll('.conviction-fill').forEach(bar => {
+    const target = bar.dataset.target;
+    const rect = bar.parentElement.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 50) {
+      bar.style.width = target + '%';
+    }
+  });
+}
+
+window.addEventListener('scroll', animateBars);
+window.addEventListener('load', () => setTimeout(animateBars, 300));
+
+/* ─── DEEP DIVE DECKS ─── */
+const DECKS = {
+  tesla: {
+    title: 'TSLA — Deep Dive',
+    slides: [
+      { type: 'cover', asset: 'TESLA', conviction: 'Conviction: 9/10 — The AI + Energy Convergence Play', author: 'James — Head of Investments, Mission Control' },
+      { type: 'content', title: 'The Thesis', body: `<p>Tesla is not a car company. It hasn't been for years. It sits at the intersection of <span class="highlight">disruptive equity and macro bet</span> — a convergence of AI, energy infrastructure, and robotics into a single, vertically integrated platform.</p>
+        <p>FSD (Full Self-Driving) isn't a feature — it's a margin expansion engine. Every mile driven trains the model. Every car sold is a data-collection node. The fleet is the moat, and it's compounding.</p>
+        <p>Optimus is the optionality the market doesn't price. A humanoid robot at scale changes the labour economics of every industry on Earth. This isn't sci-fi. This is engineering on a timeline.</p>
+        <p>Energy storage (Megapack) is the quiet compounder — grid-scale storage demand is doubling annually and Tesla is the volume leader.</p>` },
+      { type: 'content', title: 'The Data', body: `<table class="data-table">
+        <tr><th>Metric</th><th>Current</th><th>Bull Case (36M)</th></tr>
+        <tr><td>Revenue (TTM)</td><td>$98B</td><td>$145B</td></tr>
+        <tr><td>Auto Gross Margin</td><td>18.2%</td><td>24%+</td></tr>
+        <tr><td>Energy Revenue</td><td>$8.2B</td><td>$18B</td></tr>
+        <tr><td>FSD Subscribers</td><td>~2.1M</td><td>6M+</td></tr>
+        <tr><td>Optimus Units</td><td>Pilot</td><td>10K+</td></tr>
+        <tr><td>FCF Margin</td><td>4.8%</td><td>12%+</td></tr>
+        </table>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Auto (Legacy)</span><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div><span class="bar-value">65%</span></div>
+          <div class="bar-row"><span class="bar-label">Energy</span><div class="bar-track"><div class="bar-fill teal-bar" style="width:18%"></div></div><span class="bar-value">18%</span></div>
+          <div class="bar-row"><span class="bar-label">FSD/Software</span><div class="bar-track"><div class="bar-fill" style="width:12%"></div></div><span class="bar-value">12%</span></div>
+          <div class="bar-row"><span class="bar-label">Optimus/Other</span><div class="bar-track"><div class="bar-fill teal-bar" style="width:5%"></div></div><span class="bar-value">5%</span></div>
+        </div>
+        <p style="font-size:12px;color:var(--text-dim);">Revenue mix — projected 36 months forward. Energy and software become the margin story.</p>` },
+      { type: 'content', title: 'The Bull Case', body: `<p><span class="highlight">Price Target: $800</span> — 70% probability of 3.2× in 36 months, downside protected to 0.8×.</p>
+        <p><strong>Catalysts:</strong></p>
+        <table class="data-table">
+        <tr><th>Catalyst</th><th>Timeline</th><th>Impact</th></tr>
+        <tr><td>FSD L4 regulatory approval (US)</td><td>Q3 2027</td><td class="teal">HIGH</td></tr>
+        <tr><td>Optimus commercial deployment</td><td>2027-28</td><td class="teal">EXTREME</td></tr>
+        <tr><td>Megapack 100GWh milestone</td><td>H1 2027</td><td>MODERATE</td></tr>
+        <tr><td>Robotaxi fleet launch (3+ cities)</td><td>H2 2027</td><td class="teal">HIGH</td></tr>
+        <tr><td>Energy business re-rating</td><td>2027</td><td>MODERATE</td></tr>
+        </table>
+        <p>The market prices Tesla as an auto company with a P/E premium. The reality is that it's becoming a <span class="highlight">software + energy + robotics platform</span>. The re-rating hasn't happened yet. That's the opportunity.</p>` },
+      { type: 'content', title: 'The Bear Case', body: `<p>I'm honest about what could break this thesis:</p>
+        <table class="data-table">
+        <tr><th>Risk</th><th>Probability</th><th>Impact</th></tr>
+        <tr><td>FSD L4 regulation delayed 2+ years</td><td>25%</td><td class="red">HIGH</td></tr>
+        <tr><td>Competitive margin compression (BYD, etc)</td><td>40%</td><td>MODERATE</td></tr>
+        <tr><td>Musk distraction risk / governance issues</td><td>30%</td><td>MODERATE</td></tr>
+        <tr><td>Macro recession kills auto demand</td><td>20%</td><td class="red">HIGH</td></tr>
+        <tr><td>Optimus fails to commercialise by 2028</td><td>35%</td><td>MODERATE</td></tr>
+        </table>
+        <p>Bear case target: <span class="red">$190</span> (0.8× from current). The downside is bounded because energy and auto fundamentals provide a floor. But the optionality is what you're paying for — and options can expire worthless.</p>` },
+      { type: 'content', title: 'The Timeline', body: `<table class="data-table">
+        <tr><th>Period</th><th>Expected Development</th><th>Price Implication</th></tr>
+        <tr><td>Q2–Q4 2026</td><td>FSD v13 wide release, Megapack ramp</td><td>$280–320</td></tr>
+        <tr><td>H1 2027</td><td>Robotaxi pilot cities, Optimus pilots</td><td>$350–450</td></tr>
+        <tr><td>H2 2027</td><td>FSD L4 approval progress, energy re-rate</td><td>$450–600</td></tr>
+        <tr><td>2028</td><td>Full convergence: auto + energy + AI + robot</td><td>$600–800+</td></tr>
+        </table>
+        <p>This is not a momentum trade. This is a <span class="highlight">36-month structural convergence thesis</span>. Position accordingly. Size it for conviction, hedge it for reality.</p>` },
+      { type: 'content', title: 'The Verdict', body: `<div class="verdict-box">
+        <div class="verdict-label">JAMES'S VERDICT</div>
+        <div class="verdict-text">STRONG CONVICTION BUY</div>
+        <div class="verdict-sub">70% probability of 3.2× in 36 months. Downside protected to 0.8×.<br>Tesla is the intersection of three mega-trends in one ticker. You're not buying a car company — you're buying the convergence.</div>
+        </div>
+        <p style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:24px;">"I don't hype. I model. I don't speculate. I probability-weight."</p>` }
+    ]
+  },
+
+  bitcoin: {
+    title: 'BTC — Deep Dive',
+    slides: [
+      { type: 'cover', asset: 'BITCOIN', conviction: 'Conviction: 9/10 — The Macro Reserve Asset', author: 'James — Head of Investments, Mission Control' },
+      { type: 'content', title: 'The Thesis', body: `<p>Bitcoin is <span class="highlight">the macro reserve asset</span>. Not a speculation. Not a meme. A probability-weighted position on the future of money and the debasement of fiat currency.</p>
+        <p>Every central bank in the world is expanding M2. Every government is running deficits that would have been unthinkable a decade ago. Bitcoin is the exit. It's digital gold with a fixed supply in a world addicted to printing.</p>
+        <p>The halving cycle is the clock. Institutional adoption is the amplifier. And the macro backdrop — rate cuts, liquidity expansion, sovereign debt spirals — is the tide that lifts this boat higher than any other.</p>
+        <p>Macro is the tide. Everything else is a boat. Bitcoin is the boat that was built for this tide.</p>` },
+      { type: 'content', title: 'The Data', body: `<table class="data-table">
+        <tr><th>Metric</th><th>Current</th><th>Bull Case (24M)</th></tr>
+        <tr><td>Price</td><td>~$87,000</td><td>$250,000</td></tr>
+        <tr><td>Market Cap</td><td>$1.7T</td><td>$4.9T</td></tr>
+        <tr><td>vs Gold Market Cap</td><td>11%</td><td>30%+</td></tr>
+        <tr><td>ETF Net Inflows (YTD)</td><td>$38B</td><td>$120B+ (cumulative)</td></tr>
+        <tr><td>Supply on Exchanges</td><td>2.3M BTC</td><td>&lt;2M BTC</td></tr>
+        <tr><td>Hash Rate</td><td>ATH</td><td>Higher</td></tr>
+        </table>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Retail Holders</span><div class="bar-track"><div class="bar-fill" style="width:42%"></div></div><span class="bar-value">42%</span></div>
+          <div class="bar-row"><span class="bar-label">Institutional</span><div class="bar-track"><div class="bar-fill teal-bar" style="width:28%"></div></div><span class="bar-value">28%</span></div>
+          <div class="bar-row"><span class="bar-label">ETFs</span><div class="bar-track"><div class="bar-fill teal-bar" style="width:15%"></div></div><span class="bar-value">15%</span></div>
+          <div class="bar-row"><span class="bar-label">Sovereigns/Corp</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span class="bar-value">8%</span></div>
+          <div class="bar-row"><span class="bar-label">Lost/Dormant</span><div class="bar-track"><div class="bar-fill red-bar" style="width:17%"></div></div><span class="bar-value">17%</span></div>
+        </div>
+        <p style="font-size:12px;color:var(--text-dim);">Approximate BTC distribution by holder type. The institutional wave is still early innings.</p>` },
+      { type: 'content', title: 'The Bull Case', body: `<p><span class="highlight">Price Target: $250,000</span> — 65% probability of 2.8× in 24 months.</p>
+        <p><strong>Catalysts:</strong></p>
+        <table class="data-table">
+        <tr><th>Catalyst</th><th>Timeline</th><th>Impact</th></tr>
+        <tr><td>Post-halving supply shock</td><td>H2 2026</td><td class="teal">HIGH</td></tr>
+        <tr><td>Fed rate cuts → liquidity expansion</td><td>2026–27</td><td class="teal">EXTREME</td></tr>
+        <tr><td>Global M2 expansion &gt;$110T</td><td>2026–27</td><td class="teal">HIGH</td></tr>
+        <tr><td>Sovereign Bitcoin reserves (US, others)</td><td>2026–28</td><td class="teal">EXTREME</td></tr>
+        <tr><td>ETF AUM passes $200B</td><td>2027</td><td>MODERATE</td></tr>
+        </table>
+        <p>Bitcoin doesn't need a story. It needs math. Fixed supply. Expanding demand. Declining exchange reserves. The supply/demand imbalance is <span class="highlight">structural, not cyclical</span>.</p>` },
+      { type: 'content', title: 'The Bear Case', body: `<p>Honesty is a feature, not a weakness:</p>
+        <table class="data-table">
+        <tr><th>Risk</th><th>Probability</th><th>Impact</th></tr>
+        <tr><td>Regulatory crackdown (US/EU)</td><td>15%</td><td class="red">HIGH</td></tr>
+        <tr><td>Fed pivot to hawkish (no cuts)</td><td>20%</td><td class="red">HIGH</td></tr>
+        <tr><td>Black swan exchange failure</td><td>10%</td><td class="red">EXTREME</td></tr>
+        <tr><td>Competing CBDC adoption kills narrative</td><td>15%</td><td>MODERATE</td></tr>
+        <tr><td>Cycle top comes earlier than expected</td><td>25%</td><td>MODERATE</td></tr>
+        </table>
+        <p>Bear case target: <span class="red">$55,000</span> (typical cycle drawdown of ~60% from highs). This is why position sizing matters. Even with 9/10 conviction, I don't go all-in. Drawdowns are a feature of the asset class — you survive them or you don't.</p>` },
+      { type: 'content', title: 'The Timeline', body: `<table class="data-table">
+        <tr><th>Period</th><th>Expected Development</th><th>Price Implication</th></tr>
+        <tr><td>Q2–Q4 2026</td><td>Post-halving supply squeeze begins</td><td>$90K–120K</td></tr>
+        <tr><td>H1 2027</td><td>Institutional FOMO + rate cuts fuel momentum</td><td>$120K–180K</td></tr>
+        <tr><td>H2 2027</td><td>Blow-off top / sovereign accumulation phase</td><td>$180K–250K+</td></tr>
+        <tr><td>2028</td><td>Cycle consolidation / next base formation</td><td>$150K–200K</td></tr>
+        </table>
+        <p>The halving cycle is a <span class="highlight">12–18 month leading indicator</span>. We're in the window. The clock is ticking. The supply isn't coming back.</p>` },
+      { type: 'content', title: 'The Verdict', body: `<div class="verdict-box">
+        <div class="verdict-label">JAMES'S VERDICT</div>
+        <div class="verdict-text">STRONG CONVICTION BUY</div>
+        <div class="verdict-sub">65% probability of 2.8× in 24 months. Position for the cycle.<br>Bitcoin is the macro reserve asset. The halving is the clock. M2 is the fuel. Institutional adoption is the accelerant.</div>
+        </div>
+        <p style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:24px;">"Macro is the tide. Everything else is a boat."</p>` }
+    ]
+  },
+
+  solana: {
+    title: 'SOL — Deep Dive',
+    slides: [
+      { type: 'cover', asset: 'SOLANA', conviction: 'Conviction: 8/10 — The High-Performance L1', author: 'James — Head of Investments, Mission Control' },
+      { type: 'content', title: 'The Thesis', body: `<p>Solana is <span class="highlight">the high-performance Layer 1</span> that stopped debating scaling and just shipped it. 400ms block times. Sub-cent transactions. Real throughput, not roadmap throughput.</p>
+        <p>While Ethereum debates blobs and rollups, Solana is onboarding the next wave of applications that need performance: DePIN (Decentralised Physical Infrastructure), high-frequency DeFi, consumer apps, and payments.</p>
+        <p>The developer ecosystem is compounding. Hackathon participation is at ATH. The Firedancer validator client — built by Jump Trading — is the most significant infrastructure upgrade any L1 has received in years. It's not hype. It's engineering.</p>
+        <p>Solana is where the builders are going. And where the builders go, the value follows.</p>` },
+      { type: 'content', title: 'The Data', body: `<table class="data-table">
+        <tr><th>Metric</th><th>Current</th><th>Bull Case (18M)</th></tr>
+        <tr><td>Price</td><td>~$142</td><td>$500</td></tr>
+        <tr><td>TVL</td><td>$8.2B</td><td>$25B+</td></tr>
+        <tr><td>Daily Active Addresses</td><td>2.4M</td><td>8M+</td></tr>
+        <tr><td>DEX Volume (Daily)</td><td>$2.8B</td><td>$10B+</td></tr>
+        <tr><td>Validator Count</td><td>1,900+</td><td>2,500+</td></tr>
+        <tr><td>DePIN Protocols</td><td>70+</td><td>200+</td></tr>
+        </table>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">DeFi</span><div class="bar-track"><div class="bar-fill" style="width:38%"></div></div><span class="bar-value">38%</span></div>
+          <div class="bar-row"><span class="bar-label">DePIN</span><div class="bar-track"><div class="bar-fill teal-bar" style="width:22%"></div></div><span class="bar-value">22%</span></div>
+          <div class="bar-row"><span class="bar-label">NFT/Gaming</span><div class="bar-track"><div class="bar-fill" style="width:15%"></div></div><span class="bar-value">15%</span></div>
+          <div class="bar-row"><span class="bar-label">Payments</span><div class="bar-track"><div class="bar-fill teal-bar" style="width:14%"></div></div><span class="bar-value">14%</span></div>
+          <div class="bar-row"><span class="bar-label">Other</span><div class="bar-track"><div class="bar-fill" style="width:11%"></div></div><span class="bar-value">11%</span></div>
+        </div>
+        <p style="font-size:12px;color:var(--text-dim);">Ecosystem activity by sector. DePIN and payments are the fastest-growing verticals.</p>` },
+      { type: 'content', title: 'The Bull Case', body: `<p><span class="highlight">Price Target: $500</span> — 60% probability of 3.5× in 18 months.</p>
+        <p><strong>Catalysts:</strong></p>
+        <table class="data-table">
+        <tr><th>Catalyst</th><th>Timeline</th><th>Impact</th></tr>
+        <tr><td>Firedancer mainnet launch</td><td>H2 2026</td><td class="teal">HIGH</td></tr>
+        <tr><td>SOL ETF approval</td><td>2026–27</td><td class="teal">EXTREME</td></tr>
+        <tr><td>DePIN breakout (Helium, Hivemapper, etc)</td><td>2026–27</td><td class="teal">HIGH</td></tr>
+        <tr><td>Payments integration (Visa, Shopify, Stripe)</td><td>H1 2027</td><td>MODERATE</td></tr>
+        <tr><td>TVL flippening vs L2s</td><td>2027</td><td>MODERATE</td></tr>
+        </table>
+        <p>The SOL ETF is the liquidity event the market underprices. When BTC and ETH ETFs launched, they were the catalyst for re-rating. SOL is next in line. The performance narrative + ETF access = <span class="highlight">institutional inflow at scale</span>.</p>` },
+      { type: 'content', title: 'The Bear Case', body: `<p>Every thesis has a kill switch. Here are Solana's:</p>
+        <table class="data-table">
+        <tr><th>Risk</th><th>Probability</th><th>Impact</th></tr>
+        <tr><td>Network outage / stability regression</td><td>20%</td><td class="red">HIGH</td></tr>
+        <tr><td>ETF rejection / delay beyond 2027</td><td>30%</td><td>MODERATE</td></tr>
+        <tr><td>Ethereum L2s win developer mindshare back</td><td>25%</td><td>MODERATE</td></tr>
+        <tr><td>DePIN fails to find product-market fit</td><td>25%</td><td>MODERATE</td></tr>
+        <tr><td>Token unlock / inflation pressure</td><td>35%</td><td>MODERATE</td></tr>
+        </table>
+        <p>Bear case target: <span class="red">$60</span>. Solana's history includes outages and a near-death experience post-FTX. The network has hardened since, but the scar tissue is real. Firedancer is the answer — but it has to deliver.</p>` },
+      { type: 'content', title: 'The Timeline', body: `<table class="data-table">
+        <tr><th>Period</th><th>Expected Development</th><th>Price Implication</th></tr>
+        <tr><td>Q2–Q3 2026</td><td>DePIN growth + Firedancer testnet</td><td>$150–200</td></tr>
+        <tr><td>Q4 2026</td><td>Firedancer mainnet + ETF filing momentum</td><td>$200–300</td></tr>
+        <tr><td>H1 2027</td><td>ETF approval + institutional inflow wave</td><td>$300–420</td></tr>
+        <tr><td>H2 2027</td><td>Ecosystem maturity + payments adoption</td><td>$400–500+</td></tr>
+        </table>
+        <p>18 months. Firedancer is the technical catalyst. ETF is the liquidity catalyst. DePIN is the narrative catalyst. <span class="highlight">Three catalysts, one timeline, compounding probability.</span></p>` },
+      { type: 'content', title: 'The Verdict', body: `<div class="verdict-box">
+        <div class="verdict-label">JAMES'S VERDICT</div>
+        <div class="verdict-text">HIGH CONVICTION BUY</div>
+        <div class="verdict-sub">60% probability of 3.5× in 18 months. Highest asymmetry in the portfolio.<br>Solana is where the builders are. Firedancer is the moat. ETF is the unlock. DePIN is the story the market hasn't priced.</div>
+        </div>
+        <p style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:24px;">"Time is finite. It compounds. You don't get it back. Invest in the future."</p>` }
+    ]
+  }
+};
+
+/* ─── DECK NAVIGATION ─── */
+let currentDeck = null;
+let currentSlide = 0;
+
+function renderSlide() {
+  const deck = DECKS[currentDeck];
+  if (!deck) return;
+  const slide = deck.slides[currentSlide];
+  const container = document.getElementById('slideContainer');
+
+  let html = '';
+  if (slide.type === 'cover') {
+    html = `<div class="slide active slide-cover">
+      <div class="slide-asset">${slide.asset}</div>
+      <div class="slide-conviction">${slide.conviction}</div>
+      <div class="slide-author">${slide.author}</div>
+    </div>`;
+  } else {
+    html = `<div class="slide active">
+      <h2>${slide.title}</h2>
+      ${slide.body}
+    </div>`;
+  }
+  container.innerHTML = html;
+
+  document.getElementById('overlayTitle').textContent = deck.title;
+  document.getElementById('overlayCounter').textContent = `${currentSlide + 1} / ${deck.slides.length}`;
+  document.getElementById('prevBtn').disabled = currentSlide === 0;
+  document.getElementById('nextBtn').disabled = currentSlide === deck.slides.length - 1;
+}
+
+function openDeck(name) {
+  currentDeck = name;
+  currentSlide = 0;
+  const overlay = document.getElementById('overlay');
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  renderSlide();
+}
+
+function closeDeck() {
+  const overlay = document.getElementById('overlay');
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+  currentDeck = null;
+}
+
+function nextSlide() {
+  if (!currentDeck) return;
+  const deck = DECKS[currentDeck];
+  if (currentSlide < deck.slides.length - 1) {
+    currentSlide++;
+    renderSlide();
+  }
+}
+
+function prevSlide() {
+  if (!currentDeck) return;
+  if (currentSlide > 0) {
+    currentSlide--;
+    renderSlide();
+  }
+}
+
+/* ─── KEYBOARD NAV ─── */
+document.addEventListener('keydown', (e) => {
+  if (!currentDeck) return;
+  if (e.key === 'Escape') closeDeck();
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+});
+
+/* ─── TOUCH/SWIPE SUPPORT ─── */
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.getElementById('overlay').addEventListener('touchstart', (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+document.getElementById('overlay').addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  const dy = e.changedTouches[0].screenY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+    if (dx < 0) nextSlide();
+    else prevSlide();
+  }
+}, { passive: true });
+</script>
+</body>
+</html>
